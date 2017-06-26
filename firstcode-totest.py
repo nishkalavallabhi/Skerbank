@@ -1,14 +1,18 @@
-#This code is used to do experiments on the training data, by splitting it into train-development sets.
-#Idea is to pick the best performing model-feature combination and use that to predict on test data.
+'''
+This code is used to do experiments on the training data, by splitting it into train-development sets.
+Idea is to pick the best performing model-feature combination and use that to predict on test data.
+caveat: test data is different from training data, as the prediction years are different (late 2015-2016). 
+general note: We haven't used numpy before, still relatively newbies - One of us was more used to Java in the past, and the other - C/C++
+'''
 
 import numpy as np
 import pandas as pd
 from sklearn import linear_model,svm
-
-#Add these:
 from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.ensemble import BaggingRegressor, AdaBoostRegressor, ExtraTreesRegressor
 from sklearn.tree import DecisionTreeRegressor
+from xgboost import XGBRegressor
+
 
 #Training and testing files
 input_file = "train.csv"
@@ -17,11 +21,10 @@ input_file = "train.csv"
 df = pd.read_csv(input_file, header = 0)
 print(len(df.columns))
 
+#Add additional features - this turned out to be useless later.
 df['year'], df['month'], df['day'] = df['timestamp'].str.split("-").str
-
 df['year'] = df['year'].apply(pd.to_numeric)
 df['month'] = df['month'].apply(pd.to_numeric)
-
 print(len(df.columns))
 
 #Gets the header for the file as a list
@@ -48,9 +51,9 @@ def checking_columns(numpy_array):
 
 #Choosing only specific columns instead of everything. 
 features_array = [] #2,3,4,5,6,7,8,9
-features_array.extend(range(2,12))
-features_array.extend(range(13,152))
-features_array.extend(range(153,291))
+features_array.extend(range(2,11))
+features_array.extend(range(13,150))
+#features_array.extend(range(153,291))
 #features_array.extend([292,293])
 #features_array.extend([13,15,16,19,22,23,25,31,32])
 #features_array.extend(range(42,106))
@@ -58,6 +61,7 @@ features_array.extend(range(153,291))
 #features_array.extend(range(120,150))
 features_array.append(291)
 print(features_array)
+#Note: This is just arbitrary choice. We did not do any feature analysis.
 
 numpy_array = df.ix[:,features_array].as_matrix()
 #print(numpy_array.shape)
@@ -79,7 +83,8 @@ test_preds = numpy_array[30001:,-1]
 
 #Exploring multiple models:
 models = [linear_model.LinearRegression(), linear_model.Lasso(alpha = 0.1), linear_model.Lasso(alpha = 0.01), 
-linear_model.Lasso(alpha = 10), linear_model.Ridge(alpha = 0.1), linear_model.Ridge(alpha = 0.01), linear_model.Ridge(alpha = 10), GradientBoostingRegressor(n_estimators=200), GradientBoostingRegressor(n_estimators=250, learning_rate=0.01, min_samples_split=5, max_depth=5)]
+linear_model.Lasso(alpha = 10), linear_model.Ridge(alpha = 0.1), linear_model.Ridge(alpha = 0.01), linear_model.Ridge(alpha = 10), GradientBoostingRegressor(n_estimators=380), XGBRegressor()]
+#, GradientBoostingRegressor(n_estimators=250, learning_rate=0.01, min_samples_split=5, max_depth=5)
 
 #advice on GBR hyper parameter tuning: http://machinelearningmastery.com/configure-gradient-boosting-algorithm/
 

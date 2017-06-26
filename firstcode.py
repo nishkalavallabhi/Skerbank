@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
 from sklearn import linear_model,svm
-from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor, AdaBoostRegressor
+from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor, AdaBoostRegressor, BaggingRegressor
+from xgboost import XGBClassifier
 
 input_file = "train.csv"
 
@@ -45,8 +46,8 @@ original_headers = list(df.columns.values)
 #Choosing only specific columns instead of everything. 
 features_array = [] #2,3,4,5,6,7,8,9
 features_array.extend(range(2,11))
-features_array.extend(range(13,152))
-features_array.extend(range(153,291))
+features_array.extend(range(13,150))
+#features_array.extend(range(153,291))
 #features_array.append(292)
 features_array.append(291)
 #print(features_array)
@@ -76,8 +77,10 @@ print(test_data.shape)
 #regr = linear_model.Lasso(alpha = 0.01)
 #regr = svm.SVR()
 #regr = linear_model.BayesianRidge()
-regr = GradientBoostingRegressor(n_estimators=250, learning_rate=0.005) #Try incrementally increasing this and see.
+#regr = GradientBoostingRegressor(n_estimators=380, learning_rate=0.1) #Try incrementally increasing this and see.
 #regr = AdaBoostRegressor()
+#regr = BaggingRegressor(n_estimators=10, max_samples=10000, max_features =25, base_estimator=linear_model.Lasso(alpha = 10, max_iter=500))
+regr = XGBRegressor()
 regr.fit(train_data,train_preds)
 #Useful link: https://www.analyticsvidhya.com/blog/2016/02/complete-guide-parameter-tuning-gradient-boosting-gbm-python/
 
@@ -90,7 +93,7 @@ predictions = regr.predict(test_data)
 print(len(predictions))
 print(len(df_test['id']))
 
-fw = open("output-1.csv","w")
+fw = open("output-sun381est0.1.csv","w")
 fw.write("id,price_doc")
 fw.write("\n")
 
