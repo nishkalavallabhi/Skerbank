@@ -11,7 +11,7 @@ from sklearn import linear_model,svm
 from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.ensemble import BaggingRegressor, AdaBoostRegressor, ExtraTreesRegressor
 from sklearn.tree import DecisionTreeRegressor
-from xgboost import XGBRegressor
+from xgboost import XGBRegressor()
 
 
 #Training and testing files

@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn import linear_model,svm
 from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor, AdaBoostRegressor, BaggingRegressor
-from xgboost import XGBClassifier
+from xgboost import XGBRegressor
 
 input_file = "train.csv"
 
@@ -80,7 +80,7 @@ print(test_data.shape)
 #regr = GradientBoostingRegressor(n_estimators=380, learning_rate=0.1) #Try incrementally increasing this and see.
 #regr = AdaBoostRegressor()
 #regr = BaggingRegressor(n_estimators=10, max_samples=10000, max_features =25, base_estimator=linear_model.Lasso(alpha = 10, max_iter=500))
-regr = XGBRegressor()
+regr = XGBRegressor(n_estimators=450)
 regr.fit(train_data,train_preds)
 #Useful link: https://www.analyticsvidhya.com/blog/2016/02/complete-guide-parameter-tuning-gradient-boosting-gbm-python/
 
@@ -93,7 +93,7 @@ predictions = regr.predict(test_data)
 print(len(predictions))
 print(len(df_test['id']))
 
-fw = open("output-sun381est0.1.csv","w")
+fw = open("output-tue1xgb.csv","w")
 fw.write("id,price_doc")
 fw.write("\n")
 
